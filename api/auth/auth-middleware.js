@@ -11,7 +11,7 @@ const checkUsernameFree = (req, res, next) => {
         })
 }
 
-const checkValidRegistration = (req, res, next) => {
+const checkValidCredentials = (req, res, next) => {
     if(!req.body.username || !req.body.password) {
             next({ message: 'username and password required', status: 401});
     } else { 
@@ -19,7 +19,33 @@ const checkValidRegistration = (req, res, next) => {
     }
 }
 
+const checkUsernameExists = (req, res, next) => {
+    Users.findBy('username', req.body.username)
+        .then((credentials) => {
+            if(credentials.length < 1) {
+                next({ message: 'invalid credentials', status: 401 })
+            } else {
+                req.user = credentials[0]
+                next()
+            }
+        })
+}
+
+const checkPasswordMatches = (req, res, next) => {
+    Users.findBy('password', req.body.password)
+        .then((credentials) => {
+            if(credentials.length < 1) {
+                next({ message: 'invalid credentials', status: 401 })
+            } else {
+                req.user = credentials[0]
+                next()
+            }
+        })
+}
+
 module.exports = {
     checkUsernameFree,
-    checkValidRegistration
+    checkValidCredentials,
+    checkUsernameExists,
+    checkPasswordMatches,
 }
