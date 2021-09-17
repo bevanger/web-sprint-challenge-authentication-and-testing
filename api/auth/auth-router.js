@@ -6,7 +6,7 @@ const { checkUsernameFree, checkValidRegistration } = require('./auth-middleware
 
 const Users = require('../users/users-model');
 
-router.post('/register', checkUsernameFree, checkValidRegistration, (req, res, next) => {
+router.post('/register', checkValidRegistration, checkUsernameFree, (req, res, next) => {
   let user = req.body
 
   const rounds = process.env.BCRYPT_ROUNDS || 8;

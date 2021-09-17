@@ -12,10 +12,10 @@ const checkUsernameFree = (req, res, next) => {
 }
 
 const checkValidRegistration = (req, res, next) => {
-    if(req.body.username && req.body.password) {
-            next();
+    if(!req.body.username.trim || !req.body.password.trim) {
+            next({ message: 'username and password required', status: 401});
     } else { 
-        next({ message: 'username and password required', status: 401})
+        next()
     }
 }
 
