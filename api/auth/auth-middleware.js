@@ -1,9 +1,9 @@
-const Users = require('./users-model');
+const Users = require('../users/users-model');
 
 const checkUsernameFree = (req, res, next) => {
     Users.find('username', req.body.username)
         .then((usernameIsTaken) => {
-            if(usernameIsTaken > 0) {
+            if(usernameIsTaken.length > 0) {
                 next({ message: 'username taken', status: 422 })
             } else {
                 next()
