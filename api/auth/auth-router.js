@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { JWT_SECRET } = require('../secrets/index');
 const bcrypt = require('bcryptjs');
 const tokenBuilder = require('./token-builder');
-const { checkUsernameFree, checkValidCredentials, checkUsernameExists, checkPasswordMatches } = require('./auth-middleware');
+const { checkUsernameFree, checkValidCredentials, checkUsernameAndPassword } = require('./auth-middleware');
 
 const Users = require('../users/users-model');
 
@@ -46,7 +46,7 @@ router.post('/register', checkValidCredentials, checkUsernameFree, (req, res, ne
   */
 });
 
-router.post('/login', checkValidCredentials, checkUsernameExists, checkPasswordMatches, (req, res, next) => {
+router.post('/login', checkUsernameAndPassword, (req, res, next) => {
   const dbUser = req.user;
   const loginRequest = req.body;
 
@@ -55,7 +55,7 @@ router.post('/login', checkValidCredentials, checkUsernameExists, checkPasswordM
 
     res.status(200).json ({ message: `welcome ${dbUser.username}`, token })
   } else {
-    next()
+    next({ message: 'invalid credentials', status: 401 })
   }
   /*
     IMPLEMENT
